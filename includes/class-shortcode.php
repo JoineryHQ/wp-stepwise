@@ -13,6 +13,7 @@ class StepwiseShortcode {
     // FIXME: use real logic to get actual step and stepcount.
     $step = $_GET['stepwise-step'] ?? 1;
     $stepCount = $_GET['stepwise-step-count'] ?? 10;
+    $buttonText = $_GET['stepwise-button-text'] ?? 'Next';
 
     $percent = round(($step / $stepCount * 100));
 
@@ -20,7 +21,7 @@ class StepwiseShortcode {
       <div class="stepwise-button-wrapper">
         <button class="stepwise-button">
           <span class="stepsise-button-label">
-            Next
+            {$buttonText}
           </span>
         </button>
       </div>
