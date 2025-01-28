@@ -19,11 +19,11 @@ class StepwiseShortcode {
 
     $ret = <<<END
       <div class="stepwise-button-wrapper">
-        <button class="stepwise-button">
-          <span class="stepsise-button-label">
+        <a class="stepwise-button" href="#">
+          <span class="stepwise-button-label">
             {$buttonText}
           </span>
-        </button>
+        </a>
       </div>
       <div class="stepwise-progress-wrapper">
         <div class="stepwise-progress-title">Step $step of $stepCount</div>

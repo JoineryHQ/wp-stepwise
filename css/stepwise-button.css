@@ -9,3 +9,10 @@
    background: pink;
    height: 100%;
  }
+
+ a.stepwise-button {
+   display: inline-block;
+   background: lightgray;
+   text-decoration: none;
+   padding: 1em;
+ }
