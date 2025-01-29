@@ -14,12 +14,16 @@ class StepwiseShortcode {
     $step = $_GET['stepwise-step'] ?? 1;
     $stepCount = $_GET['stepwise-step-count'] ?? 10;
     $buttonText = $_GET['stepwise-button-text'] ?? 'Next';
+    $buttonDisabled = $_GET['stepwise-button-disabled'] ?? NULL;
 
     $percent = round(($step / $stepCount * 100));
 
+    if (!empty($buttonDisabled)) {
+      $classButtonDisabled = 'stepwise-button-disabled';
+    }
     $ret = <<<END
       <div class="stepwise-button-wrapper">
-        <a class="stepwise-button" href="#">
+        <a class="stepwise-button $classButtonDisabled" href="#">
           <span class="stepwise-button-label">
             {$buttonText}
           </span>
