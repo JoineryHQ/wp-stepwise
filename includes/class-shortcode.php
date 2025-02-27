@@ -9,37 +9,17 @@ class StepwiseShortcode {
    * Get array of plugin metadata.
    */
   public static function StepwiseButton($atts, $content, $shorcode_tag) {
-
-    // FIXME: use real logic to get actual step and stepcount.
-    $step = $_GET['stepwise-step'] ?? 1;
-    $stepCount = $_GET['stepwise-step-count'] ?? 10;
-    $buttonText = $_GET['stepwise-button-text'] ?? 'Next';
-    $buttonDisabled = $_GET['stepwise-button-disabled'] ?? NULL;
-
-    $percent = round(($step / $stepCount * 100));
-
-    if (!empty($buttonDisabled)) {
-      $classButtonDisabled = 'stepwise-button-disabled';
+    if (!function_exists('civicrm_initialize')) {
+      // CiviCRM is not installed; print nothing.
+      return '';
     }
-    $ret = <<<END
-      <div class="stepwise-button-wrapper">
-        <a class="stepwise-button $classButtonDisabled" href="#">
-          <span class="stepwise-button-label">
-            {$buttonText}
-          </span>
-        </a>
-      </div>
-      <div class="stepwise-progress-wrapper">
-        <div class="stepwise-progress-title">Step $step of $stepCount</div>
-        <div class="stepwise-progress-bar">
-          <div class="stepwise-progress-complete" style="width: {$percent}%">
-            <div class="stepwise-progress-complete-label">
-              {$percent}%
-            </div>
-          </div>
-        </div>
-      </div>
-    END;
+    
+    civicrm_initialize();
+
+    $ret = CRM_Stepw_Utils_WpShortcode::getStepwiseButtonHtml()
+      . CRM_Stepw_Utils_WpShortcode::getProgressBarHtml();
+                  
+    // fixme3: if this is a video page, append video-validating JS.
 
     return $ret;
   }
