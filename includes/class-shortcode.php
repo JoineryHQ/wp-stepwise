@@ -24,7 +24,6 @@ class StepwiseShortcode {
       // specifically here.
       stepw_civicrm_unhandled_exception($e);
     }
-    // fixme3: if this is a video page, append video-validating JS.
 
     return $ret;
   }
