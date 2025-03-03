@@ -30,25 +30,34 @@ class StepwiseShortcode {
 
   public static function StepwiseButtonAssets() {
     global $post;
-    if (is_a($post, 'WP_Post') && has_shortcode($post->post_content, 'stepwise-button')) {
-      if (!self::isCivicrmAndExtensionInitialize()) {
-        // If we don't have BOTH civicrm and the stepw extension, there's nothing to do here.
-        return;
-      }
-      $assets = CRM_Stepw_Utils_WpShortcode::getPageAssets();
-      foreach ($assets as $asset) {
-        $assetHandle = $asset['handle'];
-        $assetSrc = ($asset['src'] ?? '');
-        switch ($asset['type']) {
-          case 'style':
-            wp_enqueue_style($assetHandle, $assetSrc);
-            break;
-          case 'script':
-            wp_enqueue_script($assetHandle, $assetSrc);
-            break;
+    try {
+      if (is_a($post, 'WP_Post') && has_shortcode($post->post_content, 'stepwise-button')) {
+        if (!self::isCivicrmAndExtensionInitialize()) {
+          // If we don't have BOTH civicrm and the stepw extension, there's nothing to do here.
+          return;
+        }
+        $assets = CRM_Stepw_Utils_WpShortcode::getPageAssets();
+        foreach ($assets as $asset) {
+          $assetHandle = $asset['handle'];
+          $assetSrc = ($asset['src'] ?? '');
+          switch ($asset['type']) {
+            case 'style':
+              wp_enqueue_style($assetHandle, $assetSrc);
+              break;
+            case 'script':
+              wp_enqueue_script($assetHandle, $assetSrc);
+              break;
+          }
         }
       }
     }
+    catch (CRM_Stepw_Exception $e) {
+      // Although civicrm has been initialized, we're not actually IN civicrm now,
+      // so our hook_civicrm_unhandled_exception won't be invoked. Call it
+      // specifically here.
+      stepw_civicrm_unhandled_exception($e);
+    }
+
   }
   
   /**
