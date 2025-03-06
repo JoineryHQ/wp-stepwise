@@ -41,5 +41,7 @@ class StepwisePlugin {
 
     // Load button css/js if appropriate
     add_action('wp_enqueue_scripts', 'StepwiseShortcode::StepwiseButtonAssets');
+
+    add_action( 'template_redirect', 'StepwiseShortcode::redirectIfWorkflowInstanceClosed' );
   }
 }
