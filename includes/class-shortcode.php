@@ -102,17 +102,25 @@ class StepwiseShortcode {
     $hasShortcode = (FALSE !== strpos($post->post_content, '[stepwise-button]'));
 
     if ($hasShortcode && self::isCivicrmAndExtensionInitialize()) {
-      $buttonHtml = CRM_Stepw_Utils_WpShortcode::getStepwiseButtonHtml();
-      if (empty($buttonHtml)) {
-        return;
+      try {
+        $buttonHtml = CRM_Stepw_Utils_WpShortcode::getStepwiseButtonHtml();
+        if (empty($buttonHtml)) {
+          return;
+        }
+        $workflowInstancePublicId = CRM_Stepw_Utils_Userparams::getUserParams('request', CRM_Stepw_Utils_Userparams::QP_WORKFLOW_INSTANCE_ID);
+        $workflowInstance = CRM_Stepw_State::singleton()->getWorkflowInstance($workflowInstancePublicId);
+        if ($workflowInstance->getVar('isClosed')) {
+          // WorkflowInstance is closed. Redirect to last step.
+          $closedWorkflowInstanceStepUrl = $workflowInstance->getNextStepUrl();
+          wp_redirect($closedWorkflowInstanceStepUrl);
+          exit();
+        }
       }
-      $workflowInstancePublicId = CRM_Stepw_Utils_Userparams::getUserParams('request', CRM_Stepw_Utils_Userparams::QP_WORKFLOW_INSTANCE_ID);
-      $workflowInstance = CRM_Stepw_State::singleton()->getWorkflowInstance($workflowInstancePublicId);
-      if ($workflowInstance->getVar('isClosed')) {
-        // WorkflowInstance is closed. Redirect to last step.
-        $closedWorkflowInstanceStepUrl = $workflowInstance->getNextStepUrl();
-        wp_redirect($closedWorkflowInstanceStepUrl);
-        exit();
+      catch (CRM_Stepw_Exception $e) {
+        // Although civicrm has been initialized, we're not actually IN civicrm now,
+        // so our hook_civicrm_unhandled_exception won't be invoked. Call it
+        // specifically here.
+        stepw_civicrm_unhandled_exception($e);
       }
     }
   }
