@@ -111,7 +111,7 @@ class StepwiseShortcode {
         $workflowInstance = CRM_Stepw_State::singleton()->getWorkflowInstance($workflowInstancePublicId);
         if ($workflowInstance->getVar('isClosed')) {
           // WorkflowInstance is closed. Redirect to last step.
-          $closedWorkflowInstanceStepUrl = $workflowInstance->getNextStepUrl();
+          $closedWorkflowInstanceStepUrl = $workflowInstance->getFirstUncompletedStepUrl();
           wp_redirect($closedWorkflowInstanceStepUrl);
           exit();
         }
